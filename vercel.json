@@ -1,0 +1,27 @@
+
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/scraper",
+      "dest": "/api/scraper.py"
+    },
+    {
+      "src": "/api/verifier",
+      "dest": "/api/verifier.go"
+    }
+  ],
+  "functions": {
+    "api/scraper.py": {
+      "maxDuration": 300
+    },
+    "/api/verifier.go": {
+      "maxDuration": 300
+    }
+  },
+  "build": {
+    "env": {
+      "GO_BUILD_FLAGS": "-ldflags '-s -w'"
+    }
+  }
+}
