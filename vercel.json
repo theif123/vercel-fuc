@@ -15,7 +15,7 @@
     "api/scraper.py": {
       "maxDuration": 60
     },
-    "/api/verifier.go": {
+    "api/verifier.go": {
       "maxDuration": 60
     }
   },
