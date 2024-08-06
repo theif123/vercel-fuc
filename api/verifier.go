@@ -1,4 +1,4 @@
-package main
+package Handler
 
 import (
 	"encoding/json"
@@ -41,13 +41,4 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	// Send the JSON response
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(bytes)
-}
-
-func main() {
-	// Use httprouter to handle routing
-	router := httprouter.New()
-	router.GET("/verify/:email", Handler)
-
-	// Start the server
-	http.ListenAndServe(":8080", router)
 }
