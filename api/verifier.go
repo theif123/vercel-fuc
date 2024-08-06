@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/badoux/checkmail"
+	checkmail "github.com/badoux/checkmail"
 	"github.com/julienschmidt/httprouter"
 )
 
