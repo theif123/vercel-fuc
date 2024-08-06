@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	emailVerifier "github.com/AfterShip/email-verifier"
+	emailVerifier "github.com/badoux/checkmail"
 	"github.com/julienschmidt/httprouter"
 )
 
