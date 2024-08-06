@@ -13,10 +13,10 @@
   ],
   "functions": {
     "api/scraper.py": {
-      "maxDuration": 300
+      "maxDuration": 60
     },
     "/api/verifier.go": {
-      "maxDuration": 300
+      "maxDuration": 60
     }
   },
   "build": {
