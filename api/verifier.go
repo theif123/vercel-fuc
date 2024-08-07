@@ -1,4 +1,4 @@
-package handler
+package Handler
 
 import (
 	"encoding/json"
@@ -42,7 +42,7 @@ func validateEmail(email string) EmailValidationResponse {
 	return response
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	email := r.URL.Query().Get("email")
 	if email == "" {
 		http.Error(w, "Email is required", http.StatusBadRequest)
