@@ -1,7 +1,8 @@
-package Handler
+package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net"
 	"net/http"
 	"net/mail"
@@ -42,7 +43,7 @@ func validateEmail(email string) EmailValidationResponse {
 	return response
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func handler(w http.ResponseWriter, r *http.Request) {
 	email := r.URL.Query().Get("email")
 	if email == "" {
 		http.Error(w, "Email is required", http.StatusBadRequest)
@@ -53,4 +54,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(validationResponse)
+}
+
+func main() {
+	http.HandleFunc("/validate", handler)
+	fmt.Println("Server is listening on port 8080...")
 }
