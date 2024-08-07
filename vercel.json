@@ -18,5 +18,10 @@
     "api/verifier.go": {
       "maxDuration": 60
     }
+  },
+  "build": {
+    "env": {
+      "GO_BUILD_FLAGS": "-ldflags '-s -w'"
+    }
   }
 }
