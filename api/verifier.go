@@ -1,44 +1,56 @@
-package Handler
+package handler
 
 import (
 	"encoding/json"
-	"fmt"
+	"net"
 	"net/http"
-
-	emailVerifier "github.com/AfterShip/email-verifier"
-	"github.com/julienschmidt/httprouter"
+	"net/mail"
+	"strings"
 )
 
-// Vercel expects the exported function to be named Handler and match the signature func(http.ResponseWriter, *http.Request)
-func Handler(w http.ResponseWriter, r *http.Request) {
-	// Initialize the email verifier
-	verifier := emailVerifier.NewVerifier()
+type EmailValidationResponse struct {
+	Email       string `json:"email"`
+	FormatValid bool   `json:"format_valid"`
+	MXValid     bool   `json:"mx_valid"`
+	Error       string `json:"error,omitempty"`
+}
 
-	// Extract the email from the request path
-	params := httprouter.ParamsFromContext(r.Context())
-	email := params.ByName("email")
+func validateEmail(email string) EmailValidationResponse {
+	response := EmailValidationResponse{Email: email}
 
-	// Verify the email address
-	ret, err := verifier.Verify(email)
+	// 验证邮箱格式
+	_, err := mail.ParseAddress(email)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		response.FormatValid = false
+		response.Error = "Invalid email format"
+		return response
+	}
+	response.FormatValid = true
+
+	// 获取域名
+	domain := strings.Split(email, "@")[1]
+
+	// 验证MX记录
+	mxRecords, err := net.LookupMX(domain)
+	if err != nil || len(mxRecords) == 0 {
+		response.MXValid = false
+		response.Error = "Domain does not have MX records"
+		return response
+	}
+	response.MXValid = true
+
+	return response
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	email := r.URL.Query().Get("email")
+	if email == "" {
+		http.Error(w, "Email is required", http.StatusBadRequest)
 		return
 	}
 
-	// Check if the email syntax is valid
-	if !ret.Syntax.Valid {
-		fmt.Fprint(w, "email address syntax is invalid")
-		return
-	}
+	validationResponse := validateEmail(email)
 
-	// Marshal the verification result to JSON
-	bytes, err := json.Marshal(ret)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Send the JSON response
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(bytes)
+	json.NewEncoder(w).Encode(validationResponse)
 }
